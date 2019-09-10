@@ -1,0 +1,69 @@
+matrix:
+  include:
+  - language: r
+    sudo: false
+    cache: packages
+
+    warnings_are_errors: false
+
+    r:
+      - release
+
+    addons:
+      apt:
+        packages:
+          - libgsl0-dev
+
+    r_packages:
+      - devtools
+      - testthat
+      - Rcpp
+
+    before_install:
+      - cd R-Project
+
+    script:
+      - printf "Starting install and test with devtools.\n\n"
+      - Rscript -e "Rcpp::compileAttributes()"
+      ## The next 2 lines were a fix for lines 35-6
+      - Rscript -e "install.packages('./', type = 'source', repos = NULL)"
+      - Rscript -e "devtools::test(stop_on_failure = FALSE)"
+      ## The following won't work until we fix the ../../packedForest -> R-Project/src problem
+      #- printf "Starting BUILD and CHECK --as-cran\n\n"
+      #- R CMD build --resave-data .
+      #- R CMD check --as-cran --no-manual rerf*.tar.gz
+      - Rscript travisTest/test-on-prior-release.R
+  
+  - language: cpp
+    dist: xenial
+    sudo: false
+    compiler: 
+      - gcc
+
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-6 
+
+    before_install:
+    - cd packedForest
+
+    script:
+      - make
+      - cd test
+      - make
+
+  - language: python
+    dist: xenial
+    python: 
+      - "3.6"
+    before_install: cd Python
+    install: 
+      - pip install -r requirements.txt
+      - pip install -e .
+      - cd ..
+    script:
+      - pytest
+    

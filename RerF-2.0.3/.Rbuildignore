@@ -1,0 +1,15 @@
+^README.html$
+^README.Rmd$
+^travisTest$
+^docs$
+^\.git$
+^\.travis\.yml$
+^.*\.gz$
+^.*\.out$
+^.*\.o$
+^.*\.so$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.github$
+^src/packedForest$
+^src/submodule_readme.md$
